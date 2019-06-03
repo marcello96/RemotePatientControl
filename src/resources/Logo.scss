@@ -1,0 +1,29 @@
+.Logo {
+
+    // vertical align middle fix
+    &:before {
+        content: "";
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+    }
+    vertical-align: middle;
+
+    img {
+        vertical-align: middle;
+        display: inline-block;
+        max-width: 30%;
+    }
+
+    .name {
+        font-size: 70px;
+        margin: 0;
+        display: inline-block;
+        vertical-align: middle;
+
+        @media only screen and (max-width: 600px) {
+            font-size: 40px;
+        }
+
+      }
+}

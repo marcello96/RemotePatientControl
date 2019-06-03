@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+
+html, body {
+  height: fit-content;
+  min-height: 100%;
+  width: 100% !important;
+  
+}
+
+body {
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  background: linear-gradient(to bottom right, #4BB187, #401D5D) fixed;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#root {
+  height: fit-content;
+  width: 100% !important;
+  margin: 0;
+}
+
+
+
+
+

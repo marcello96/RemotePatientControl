@@ -1,0 +1,133 @@
+#header-menu {
+  z-index: 200;
+  height: 60px;
+  position: absolute;
+  width: 100%;
+  margin-right: 0;
+}
+
+.navbar {
+  height: 60px;
+  background-color:  #47456e;
+  border: none;
+  border-radius: 0px;
+  color: white;
+}
+
+.navbar-brand {
+  color: white !important;
+  padding: 0px;
+  font-size: 24px;
+  margin-right: 20px;
+}
+
+.navbar-brand img {
+  width: 60px;
+  display: inline;
+}
+
+.navbar-brand a {
+  color: white;
+}
+
+.navbar2-btn {
+  margin: 0px;
+}
+
+.navbar-brand a:hover {
+  color: #999999;
+}
+
+.btn2-info {
+
+  color: #fff;
+  background-color: #47456e;
+  border-color: #47456e;
+
+}
+
+.btn2:hover {
+  background-color: #3d3b5e;
+  border-color: #3d3b5e;
+}
+
+.btn2 {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.header-menu-elem-text {
+  padding-left: 10px;
+
+}
+
+.dropdown-toggle span {
+color: #fff;
+}
+
+.dropdown.open {
+  background-color: #47456e;
+}
+.dropdown {
+  min-width: 160px;
+}
+
+#user-avatar {
+  width: 40px;
+}
+
+
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .open > a:hover {
+  color: #555;
+  background-color: #3d3b5e;
+}
+
+.navbar-nav > li > a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+  color: #fff;
+  background-color: #6d7fcc;
+}
+
+.dropdown-menu > li > a, .dropdown-menu > li > a {
+  color: #514f7d;
+  background-color: #fff;
+
+}
+
+
+/* toggle navigation button for responsive site */
+
+.navbar-text {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .navbar-text {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: -10px;
+  }
+}

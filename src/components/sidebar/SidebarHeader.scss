@@ -1,0 +1,65 @@
+.sidebar-header {
+  text-align: center;
+}
+
+.sidebar-header {
+  img {
+    width: 100px;
+    visibility: visible;
+    opacity: 1.0;
+
+    /*animation-name: logoIn;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;*/
+  }
+
+  .name {
+    font-weight: 500;
+    padding-top: 5px;
+    color: #bfbfbf;
+    visibility: visible;
+    opacity: 1.0;
+/*
+    animation-name: logoIn;
+    animation-duration: 0.5s;*/
+  }
+/*
+}@keyframes logoIn {
+  from {
+    opacity: 0;
+    visibility: hidden;
+   // transform: rotateZ(45deg);
+  }
+
+  to {
+    opacity: 1.0;
+    visibility: visible;
+    //transform: rotateZ(0deg);
+
+  }*/
+ }
+
+
+
+#sidebar.active .sidebar-header {
+  img {
+    visibility: hidden;
+    display: none;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    opacity: 0;
+
+  }
+
+  .name {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    opacity: 0;
+
+  }
+
+
+}
