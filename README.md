@@ -2,7 +2,11 @@
 
 ## Project setup
 
-1. Install dependencies
+1. Install OTP
+
+2. Install rabbitmq server
+
+3. Install dependencies
 `npm install`
-1. Start local application
+4. Start local application
 `npm start`
