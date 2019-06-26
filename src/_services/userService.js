@@ -5,7 +5,8 @@ export const userService = {
     logout,
     register,
     getMeasurements,
-    getPatients
+    getPatients,
+    measurementsSubscribe,
 };
 
 function login(username, password) {
@@ -63,12 +64,17 @@ function register(username, email, password) {
 const url = 'http://localhost:8080';
 
 
-async function getMeasurements(patientNumber){
-    const response = await axios.get(url+'/patient/'+patientNumber+'/measurements');
+async function getMeasurements(patientID){
+    const response = await axios.get(url+'/patient/'+patientID+'/measurements');
     return response.data;
 }
 
 async function getPatients(){
     const response = await axios.get(url+'/patients');
     return response.data;
+}
+
+async function measurementsSubscribe(patientID){
+    const response = await axios.get(url+'/patient/'+patientID+'/measurements/subscribe');
+    return response;
 }

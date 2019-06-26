@@ -26,11 +26,9 @@ class Monitoring extends PureComponent {
     }
 
     reloadPage = () => {
-        let patientID = 1;
 
-        userService.getMeasurements(patientID)
+        userService.getMeasurements(this.state.selectedPatientID)
             .then(data => {
-                console.log(data)
                 this.setState({
                     measurementsList: data.measurements
                 })
@@ -38,11 +36,19 @@ class Monitoring extends PureComponent {
 
         userService.getPatients()
             .then(data => {
-                console.log(data)
                 this.setState({
                     patients: data.patients
                 })
             });
+        userService.measurementsSubscribe(this.state.selectedPatientID)
+            .then(data => {
+                //TODO does not work, because request does not return, it lasts
+                console.log('test')
+                console.log(data)
+
+
+            });
+
     };
 
     render() {
