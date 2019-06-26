@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
-//import { AppRegistry, Text, StyleSheet } from 'react-native';
 import './Monitoring.scss';
-
-//import { LineChart, Line } from 'recharts';
-//import { PureComponent } from 'react';
+import "react-awesome-button/dist/styles.css"
 import {userService} from "../_services/userService";
 
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+import {AwesomeButton} from "react-awesome-button";
+
 
 
 class Monitoring extends PureComponent {
@@ -17,7 +16,8 @@ class Monitoring extends PureComponent {
         this.state = {
             measurementsList: "",
             patients: [],
-            selectedPatientID: 1
+            selectedPatientID: 1,
+            selectedPatientUsername: "",
         };
     }
 
@@ -40,7 +40,7 @@ class Monitoring extends PureComponent {
             .then(data => {
                 console.log(data)
                 this.setState({
-                    patients: data.measurements
+                    patients: data.patients
                 })
             });
     };
@@ -71,11 +71,13 @@ class Monitoring extends PureComponent {
                 <div className="char">
                     <div id="header">Heart Rate Monitoring</div>
                     <br/><br/>
-
-
-                    <select value={this.state.selectedPatientID}
-                            onChange={(e) => this.setState({selectedPatientID: e.timestamp})}>
-                        {this.state.patients.map((patient) => <option key={patient.timestamp} value={patient.timestamp}>{patient.timestamp}</option>)}
+                    <AwesomeButton type="primary">LIVE</AwesomeButton>
+                    <br/><br/>
+                    <span id={"SelectPatientLabel"}>Select Patient</span>
+                    <br/>
+                    <select id="PatientDropdown" value={this.state.selectedPatientID}
+                            onChange={(e) => this.setState({selectedPatientID: e.id, selectedPatientUsername: e.username})}>
+                        {this.state.patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.username}</option>)}
                     </select>
 
                     <div>

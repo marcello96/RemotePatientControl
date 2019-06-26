@@ -4,10 +4,35 @@
 }
 
 #header{
-  color: white;
+  color: yellowgreen;
   font-size: 26px;
 }
 
 span.recharts-legend-item-text {
   color: white;
+}
+
+#SelectPatientLabel{
+  color: white;
+  font-size: 20px;
+}
+
+#PatientDropdown{
+  font-size: 20px;
+  background-color: #3d3b5e;
+  color: white;
+  margin-top: 10px;
+}
+
+.aws-btn--primary .aws-btn__content{
+  background-color: goldenrod !important;
+}
+
+//TODO does not work float right
+span.aws-btn__content {
+  float: right;
+}
+
+#primaryButton {
+  float: right;
 }
