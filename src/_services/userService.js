@@ -1,7 +1,10 @@
+import axios from "axios/index";
+
 export const userService = {
     login,
     logout,
-    register
+    register,
+    getMeasurements
 };
 
 function login(username, password) {
@@ -53,4 +56,17 @@ function register(username, email, password) {
                 return Promise.reject(response.statusText);
             }
     });
+}
+
+
+const url = 'http://localhost:8080/patient';
+function getMeasurements(patientNumber){
+    axios.get(url+'/'+patientNumber+'/measurements').then(function(response){
+        console.log('lalalal'+response.data);
+        //cb(response.data)
+    })
+        .catch(function (error) {
+            console.log(error);
+        })
+
 }
