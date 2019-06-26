@@ -16,6 +16,8 @@ class Monitoring extends PureComponent {
         super(props);
         this.state = {
             measurementsList: "",
+            patients: [],
+            selectedPatientID: 1
         };
     }
 
@@ -25,12 +27,26 @@ class Monitoring extends PureComponent {
 
     reloadPage = () => {
         let patientID = 1;
+
         userService.getMeasurements(patientID)
             .then(data => {
-                this.setState({measurementsList: data.measurements})
+                console.log(data)
+                this.setState({
+                    measurementsList: data.measurements
+                })
+            });
+
+        userService.getPatients()
+            .then(data => {
+                console.log(data)
+                this.setState({
+                    patients: data.measurements
+                })
             });
     };
+
     render() {
+
             const renderLineChart = (
                 <LineChart
                     width={1200}
@@ -49,17 +65,27 @@ class Monitoring extends PureComponent {
                 </LineChart>
             );
 
+
             return (
 
                 <div className="char">
                     <div id="header">Heart Rate Monitoring</div>
                     <br/><br/>
+
+
+                    <select value={this.state.selectedPatientID}
+                            onChange={(e) => this.setState({selectedPatientID: e.timestamp})}>
+                        {this.state.patients.map((patient) => <option key={patient.timestamp} value={patient.timestamp}>{patient.timestamp}</option>)}
+                    </select>
+
+                    <div>
+
+                    </div>
+                    <br/><br/>
                     {renderLineChart}
                 </div>
             )
         }
-
-
 }
 
 export default Monitoring;
