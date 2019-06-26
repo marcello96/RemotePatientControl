@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 //import { AppRegistry, Text, StyleSheet } from 'react-native';
 import './Monitoring.scss';
-
 //import { LineChart, Line } from 'recharts';
 //import { PureComponent } from 'react';
 import {
@@ -37,6 +36,8 @@ const data = [
 
 class Monitoring extends PureComponent {
     render() {
+        const patientID = 1
+
         const renderLineChart = (
             <LineChart
                 width={1200}
