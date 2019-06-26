@@ -12,6 +12,7 @@
 /build
 out/
 
+
 # misc
 .DS_Store
 .env.local
@@ -25,3 +26,4 @@ yarn-error.log*
 .vscode/launch.json
 
 config.js
+package-lock.json
