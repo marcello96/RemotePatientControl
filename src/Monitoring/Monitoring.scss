@@ -22,17 +22,20 @@ span.recharts-legend-item-text {
   background-color: #3d3b5e;
   color: white;
   margin-top: 10px;
+  border: solid 3px #3d3b5e;
+  height: 50px;
+  width: 200px;
 }
 
-.aws-btn--primary .aws-btn__content{
-  background-color: goldenrod !important;
-}
 
-//TODO does not work float right
-span.aws-btn__content {
+#modeButton{
+  background-color: #401D5D;
+  font-size: 20px;
+  color: white;
+  height: 50px;
+  width: 90px;
+  border: solid 3px #401D5D;
+  border-radius: 5px;
   float: right;
-}
-
-#primaryButton {
-  float: right;
+  margin-right: 200px;
 }
