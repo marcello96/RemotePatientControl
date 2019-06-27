@@ -18,7 +18,34 @@ class Monitoring extends PureComponent {
             patients: [],
             selectedPatientID: 1,
             selectedPatientUsername: "",
+            ping: new Date(),
         };
+
+        // connect to the realtime database stream
+        let eventSource = new EventSource('http://localhost:8080/patient/1/measurements/subscribe');
+        // check if the realtime connection is dead, reload client if dead
+        setInterval(() => {
+            let now = new Date().getTime();
+            let diff = (now - this.state.ping.getTime()) /1000;
+
+            if(diff > 20){
+                window.location.reload();
+            }
+        }, 10000);
+
+        eventSource.addEventListener('MEASUREMENT', function(e) {
+            this.setState(previousState => {
+                console.log('measurement'+e)
+                return {ping: new Date(e.data)};
+            });
+        }.bind(this), false);
+
+        eventSource.addEventListener('INIT', function(e) {
+            console.log('init'+e)
+            this.setState(previousState => {
+                return {ping: new Date(e.data)};
+            });
+        }.bind(this), false);
     }
 
     componentWillMount(){
@@ -39,14 +66,6 @@ class Monitoring extends PureComponent {
                 this.setState({
                     patients: data.patients
                 })
-            });
-        userService.measurementsSubscribe(this.state.selectedPatientID)
-            .then(data => {
-                //TODO does not work, because request does not return, it lasts
-                console.log('test')
-                console.log(data)
-
-
             });
 
     };
