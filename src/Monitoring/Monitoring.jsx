@@ -19,10 +19,9 @@ class Monitoring extends PureComponent {
             selectedPatientID: 1,
             selectedPatientUsername: "",
             ping: new Date(),
+            eventSource: null,
         };
 
-        // connect to the realtime database stream
-        let eventSource = new EventSource('http://localhost:8080/patient/1/measurements/subscribe');
         // check if the realtime connection is dead, reload client if dead
         setInterval(() => {
             let now = new Date().getTime();
@@ -33,19 +32,6 @@ class Monitoring extends PureComponent {
             }
         }, 10000);
 
-        eventSource.addEventListener('MEASUREMENT', function(e) {
-            this.setState(previousState => {
-                console.log('measurement'+e)
-                return {ping: new Date(e.data)};
-            });
-        }.bind(this), false);
-
-        eventSource.addEventListener('INIT', function(e) {
-            console.log('init'+e)
-            this.setState(previousState => {
-                return {ping: new Date(e.data)};
-            });
-        }.bind(this), false);
     }
 
     componentWillMount(){
@@ -67,6 +53,42 @@ class Monitoring extends PureComponent {
                     patients: data.patients
                 })
             });
+
+    };
+
+    measurementsSubscribe = () => {
+        // connect to the realtime database stream
+        console.log('measurementSubscribe')
+
+        let  eventSource = new EventSource('http://localhost:8080/patient/1/measurements/subscribe');
+
+        eventSource.addEventListener('INIT', function(e) {
+            console.log('init'+e)
+            this.setState(previousState => {
+                return {
+                    ping: new Date(e.data)
+                };
+            });
+        }.bind(this), false);
+
+        eventSource.addEventListener('MEASUREMENT', function(e) {
+            console.log('measurement');
+            console.log(e.data);
+            console.log('old state')
+            console.log(this.state.measurementsList)
+            const list = this.state.measurementsList.concat(e.data);
+            console.log('list');
+            console.log(list);
+            this.setState(previousState => {
+                return {
+                    ping: new Date(e.data),
+                    measurementsList: list
+                };
+            });
+
+        }.bind(this), false);
+
+        this.setState({eventSource: eventSource});
 
     };
 
@@ -96,7 +118,8 @@ class Monitoring extends PureComponent {
                 <div className="char">
                     <div id="header">Heart Rate Monitoring</div>
                     <br/><br/>
-                    <AwesomeButton type="primary">LIVE</AwesomeButton>
+                    <AwesomeButton type="primary" onPress="measurementsSubscribe">LIVE</AwesomeButton>
+                    <button onClick={this.measurementsSubscribe}>LIVE</button>
                     <br/><br/>
                     <span id={"SelectPatientLabel"}>Select Patient</span>
                     <br/>
