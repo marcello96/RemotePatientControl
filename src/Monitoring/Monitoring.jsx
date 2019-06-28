@@ -18,13 +18,13 @@ class Monitoring extends PureComponent {
             patients: [],
             selectedPatientID: 2,
             ping: new Date(),
+            measurementSubscribe: false,
             eventSource: null,
             modeButtonColor: '#401D5D',
         };
 
         // check if the realtime connection is dead, reload client if dead
-
-        setInterval(() => {
+        /*setInterval(() => {
             let now = new Date().getTime();
             let diff = (now - this.state.ping.getTime()) /1000;
 
@@ -32,7 +32,7 @@ class Monitoring extends PureComponent {
                 window.location.reload();
             }
         }, 10000);
-
+*/
         //this.measurementsSubscribe = this.measurementsSubscribe.bind(this);
 
     }
@@ -42,6 +42,9 @@ class Monitoring extends PureComponent {
     }
 
     reloadPage = () => {
+
+        console.log('in reload page');
+        console.log(this.state.selectedPatientID);
 
         userService.getMeasurements(this.state.selectedPatientID)
             .then(data => {
@@ -60,15 +63,38 @@ class Monitoring extends PureComponent {
 
     };
 
+    reloadMeasurements = (patientID) => {
+
+        this.setState({selectedPatientID: patientID}, function () {
+            console.log('and here?')
+            console.log(this.state.selectedPatientID);
+        });
+        userService.getMeasurements(patientID)
+            .then(data => {
+                console.log(data.measurements)
+                this.setState({
+                    measurementsList: data.measurements
+                }, function() {
+                   console.log('check graph');
+                })
+            });
+        console.log('after reload measurements');
+        console.log(this.state.selectedPatientID)
+    }
+
     measurementsSubscribe = () => {
         console.log('measurementSubscribe')
+        this.setState(prevState => ({
+            measurementSubscribe: !prevState.measurementSubscribe
+        }));
+
         // connect to the real time database stream
-        if(this.state.eventSource != null){
+        if(this.state.measurementSubscribe){
             this.state.eventSource.close();
             this.setState({
                 eventSource: null,
                 modeButtonColor: '#401D5D',
-            })
+            });
 
             console.log('close subscribe');
             return
@@ -81,7 +107,7 @@ class Monitoring extends PureComponent {
         let eventSource = new EventSource('http://localhost:8080/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
 
         eventSource.addEventListener('INIT', function(e) {
-            console.log('init'+e)
+            console.log('init'+e);
             this.setState(() => {
                 return {
                     ping: new Date(e.data)
@@ -152,8 +178,12 @@ class Monitoring extends PureComponent {
                                         selectedPatientID: e.target.value
                                     }
                                 );
-                                this.measurementsSubscribe();
-                                this.reloadPage();
+                                if(this.state.measurementsSubscribe){
+                                    console.log('was measurementSubscribe');
+                                   this.measurementsSubscribe();
+                                }
+
+                                this.reloadMeasurements(e.target.value);
                                 }
                             }>
                         {this.state.patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.firstname + ' ' + patient.lastname}</option>)}
