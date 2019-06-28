@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import './Monitoring.scss';
 import "react-awesome-button/dist/styles.css"
 import {userService} from "../_services/userService";
+import EventSource from 'eventsource'
 
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -15,7 +16,7 @@ class Monitoring extends PureComponent {
         this.state = {
             measurementsList: "",
             patients: [],
-            selectedPatientID: 1,
+            selectedPatientID: 2,
             ping: new Date(),
             eventSource: null,
         };
@@ -64,7 +65,8 @@ class Monitoring extends PureComponent {
         }
         console.log('this.state.selectedPatientID')
         console.log(this.state.selectedPatientID);
-        let eventSource = new EventSource('http://localhost:8080/patient/'+this.state.selectedPatientID+'/measurements/subscribe');
+        let eventSourceInitDict = {headers: {'Authorization': localStorage.getItem('user')}};
+        let eventSource = new EventSource('http://localhost:8080/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
 
         eventSource.addEventListener('INIT', function(e) {
             console.log('init'+e)
@@ -128,7 +130,7 @@ class Monitoring extends PureComponent {
                     <span id={"SelectPatientLabel"}>Select Patient</span>
                     <br/>
                     <select id="PatientDropdown" value={this.state.selectedPatientID}
-                            defaultValue={{ label: "Ricky Balboa" ,value: 1, key: 1}}
+                            defaultValue={{ label: "Ricky Balboa" , value: 1, key: 1}}
                             onChange={(e) => {
                                 console.log('e')
                                 console.log(e.target.value)

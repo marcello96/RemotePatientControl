@@ -8,26 +8,23 @@ export const userActions = {
 };
 
 function login(credentials) {
-    // return dispatch => {
-    //     const { username, password } = credentials;
-    //     dispatch(request(username));
-    //
-    //     userService.login(username, password)
-    //         .then(user => {
-    //             dispatch(success(username));
-    //         },
-    //         error => {
-    //             dispatch(failure(error));
-    //             window.alert('Something went wrong :(');
-    //         });
-    // };
+    return dispatch => {
+        const { username, password } = credentials;
+        dispatch(request(username));
 
-    // function request(user) { return { type: actionsConstants.LOGIN_REQUEST, user } }
-    // function success(user) { return { type: actionsConstants.LOGIN_SUCCESS, user } }
-    // function failure(error) { return { type: actionsConstants.LOGIN_FAILURE, error } }
-    const { username, password } = credentials;
-    let user = userService.login(username, password);
-    return { type: actionsConstants.LOGIN_SUCCESS, user }
+        userService.login(username, password)
+            .then(user => {
+                dispatch(success(username));
+            },
+            error => {
+                dispatch(failure(error));
+                window.alert('Something went wrong :(');
+            });
+    };
+
+    function request(user) { return { type: actionsConstants.LOGIN_REQUEST, user } }
+    function success(user) { return { type: actionsConstants.LOGIN_SUCCESS, user } }
+    function failure(error) { return { type: actionsConstants.LOGIN_FAILURE, error } }
 }
 
 function logout() {
@@ -35,11 +32,11 @@ function logout() {
     return { type: actionsConstants.LOGOUT };
 }
 
-function register(username, email, password) {
+function register(username, password, firstname, lastname) {
     console.log('registration of user' + username + 'in progress');
     return dispatch => {
         dispatch(request());
-        userService.register(username, email, password)
+        userService.register(username, password, firstname, lastname)
             .then(() => {
                 dispatch(success());
             }, 
