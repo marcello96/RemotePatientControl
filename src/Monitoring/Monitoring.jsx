@@ -16,8 +16,6 @@ class Monitoring extends PureComponent {
             measurementsList: "",
             patients: [],
             selectedPatientID: 1,
-            selectedPatientUsername: "",
-            selectedPatient: "",
             ping: new Date(),
             eventSource: null,
         };
@@ -31,6 +29,7 @@ class Monitoring extends PureComponent {
                 window.location.reload();
             }
         }, 10000);
+        //this.measurementsSubscribe = this.measurementsSubscribe.bind(this);
 
     }
 
@@ -42,6 +41,7 @@ class Monitoring extends PureComponent {
 
         userService.getMeasurements(this.state.selectedPatientID)
             .then(data => {
+                console.log(data.measurements)
                 this.setState({
                     measurementsList: data.measurements
                 })
@@ -59,7 +59,12 @@ class Monitoring extends PureComponent {
     measurementsSubscribe = () => {
         console.log('measurementSubscribe')
         // connect to the real time database stream
-        let  eventSource = new EventSource('http://localhost:8080/patient/1/measurements/subscribe');
+        if(this.state.eventSource != null){
+            this.state.eventSource.close();
+        }
+        console.log('this.state.selectedPatientID')
+        console.log(this.state.selectedPatientID);
+        let eventSource = new EventSource('http://localhost:8080/patient/'+this.state.selectedPatientID+'/measurements/subscribe');
 
         eventSource.addEventListener('INIT', function(e) {
             console.log('init'+e)
@@ -90,6 +95,7 @@ class Monitoring extends PureComponent {
         this.setState({eventSource: eventSource});
 
     };
+
 
     render() {
 
@@ -122,10 +128,17 @@ class Monitoring extends PureComponent {
                     <span id={"SelectPatientLabel"}>Select Patient</span>
                     <br/>
                     <select id="PatientDropdown" value={this.state.selectedPatientID}
-                            onChange={(e) => this.setState({
-                                selectedPatientID: e.id,
-                                selectedPatientUsername: e.username,
-                                selectedPatient: e.firstname + ' ' + e.lastname})
+                            defaultValue={{ label: "Ricky Balboa" ,value: 1, key: 1}}
+                            onChange={(e) => {
+                                console.log('e')
+                                console.log(e.target.value)
+                                this.setState({
+                                        selectedPatientID: e.target.value
+                                    }
+                                );
+                                this.measurementsSubscribe();
+                                this.reloadPage();
+                                }
                             }>
                         {this.state.patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.firstname + ' ' + patient.lastname}</option>)}
                     </select>
