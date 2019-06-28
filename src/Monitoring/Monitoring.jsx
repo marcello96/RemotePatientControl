@@ -19,9 +19,11 @@ class Monitoring extends PureComponent {
             selectedPatientID: 2,
             ping: new Date(),
             eventSource: null,
+            modeButtonColor: '#401D5D',
         };
 
         // check if the realtime connection is dead, reload client if dead
+
         setInterval(() => {
             let now = new Date().getTime();
             let diff = (now - this.state.ping.getTime()) /1000;
@@ -30,6 +32,7 @@ class Monitoring extends PureComponent {
                 window.location.reload();
             }
         }, 10000);
+
         //this.measurementsSubscribe = this.measurementsSubscribe.bind(this);
 
     }
@@ -62,7 +65,16 @@ class Monitoring extends PureComponent {
         // connect to the real time database stream
         if(this.state.eventSource != null){
             this.state.eventSource.close();
+            this.setState({
+                eventSource: null,
+                modeButtonColor: '#401D5D',
+            })
+
+            console.log('close subscribe');
+            return
         }
+
+        console.log('open subscribe');
         console.log('this.state.selectedPatientID')
         console.log(this.state.selectedPatientID);
         let eventSourceInitDict = {headers: {'Authorization': localStorage.getItem('user')}};
@@ -88,13 +100,15 @@ class Monitoring extends PureComponent {
             this.setState(() => {
                 return {
                     ping: new Date(e.data),
-                    measurementsList: list
+                    measurementsList: list,
                 };
             });
 
         }.bind(this), false);
 
-        this.setState({eventSource: eventSource});
+        this.setState({
+            eventSource: eventSource,
+            modeButtonColor: 'red',});
 
     };
 
@@ -125,15 +139,15 @@ class Monitoring extends PureComponent {
                 <div className="char">
                     <div id="header">Heart Rate Monitoring</div>
                     <br/><br/>
-                    <button id="modeButton" onClick={this.measurementsSubscribe}>LIVE</button>
+                    <button id="modeButton" onClick={this.measurementsSubscribe} style={{backgroundColor:this.state.modeButtonColor}}>{this.state.eventSource == null? 'LIVE OFF' : 'LIVE ON'}</button>
                     <br/><br/>
                     <span id={"SelectPatientLabel"}>Select Patient</span>
                     <br/>
                     <select id="PatientDropdown" value={this.state.selectedPatientID}
                             defaultValue={{ label: "Ricky Balboa" , value: 1, key: 1}}
                             onChange={(e) => {
-                                console.log('e')
-                                console.log(e.target.value)
+                                console.log('e');
+                                console.log(e.target.value);
                                 this.setState({
                                         selectedPatientID: e.target.value
                                     }
