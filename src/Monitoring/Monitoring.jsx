@@ -3,11 +3,9 @@ import './Monitoring.scss';
 import "react-awesome-button/dist/styles.css"
 import {userService} from "../_services/userService";
 import EventSource from 'eventsource'
-
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
-
 
 
 class Monitoring extends PureComponent {
@@ -22,19 +20,6 @@ class Monitoring extends PureComponent {
             eventSource: null,
             modeButtonColor: '#401D5D',
         };
-
-        // check if the realtime connection is dead, reload client if dead
-        /*setInterval(() => {
-            let now = new Date().getTime();
-            let diff = (now - this.state.ping.getTime()) /1000;
-
-            if(diff > 20){
-                window.location.reload();
-            }
-        }, 10000);
-*/
-        //this.measurementsSubscribe = this.measurementsSubscribe.bind(this);
-
     }
 
     componentWillMount(){
@@ -104,7 +89,7 @@ class Monitoring extends PureComponent {
         console.log('this.state.selectedPatientID')
         console.log(this.state.selectedPatientID);
         let eventSourceInitDict = {headers: {'Authorization': localStorage.getItem('user')}};
-        let eventSource = new EventSource('http://localhost:8080/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
+        let eventSource = new EventSource('http://'+userService.url+'/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
 
         eventSource.addEventListener('INIT', function(e) {
             console.log('init'+e);

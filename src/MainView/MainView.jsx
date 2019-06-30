@@ -5,6 +5,7 @@ import Header from "../components/sidebar/Header";
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import Monitoring from "../Monitoring/Monitoring";
+import PatientsList from "../Patients/Patients"
 
 class MainView extends Component {
     constructor(props) {
@@ -15,16 +16,12 @@ class MainView extends Component {
     }
 
     render() {
-        // let userAvatar = this.props.avatar;
-        // let srcUrl = !!userAvatar
-        //     ? URL.createObjectURL(userAvatar)
-        //     : "https://geoxplore-api.herokuapp.com/community/avatar/" + this.props.user;
-        const userData = {
+           const userData = {
             name: this.props.user,
             avatar: {
                 src: "url",
                 onError: (event) => {
-                    event.target.src = require(`../resources/_userLogo.png`);
+                    event.target.src = require(`../resources/happydoctor.jpg`);
                     event.target.onerror = null;
                 }
             }
@@ -39,6 +36,7 @@ class MainView extends Component {
                 <div id="content" className={this.state.isActive === true ? "active" : ""}>
                     <Switch>
                         <Route path="/home" exact render={() => <Monitoring/>} />
+                        <Route path="/home/patients" exact render={() => <PatientsList/>} />
                     </Switch>
                 </div>
             </div>

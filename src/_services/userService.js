@@ -1,11 +1,14 @@
 import axios from "axios/index";
 
+let url = "localhost:8080";//"192.168.43.134:8080";
+
 export const userService = {
     login,
     logout,
     register,
     getMeasurements,
     getPatients,
+    url
 };
 
 function login(username, password) {
@@ -39,7 +42,7 @@ function logout() {
 }
 
 function register(username, password, firstname, lastname) {
-    const targetUrl = 'http://localhost:8080/user-management/doctor';
+    const targetUrl = 'http://192.168.43.134:8080/user-management/doctor';
     const reqOpts = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -54,17 +57,18 @@ function register(username, password, firstname, lastname) {
     });
 }
 
-//TODO move it from here!
-const url = 'http://localhost:8080';
+
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('user');
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 async function getMeasurements(patientID) {
-    const response = await axios.get(url+'/patient/'+patientID+'/measurements');
+    const response = await axios.get('http://'+url+'/patient/'+patientID+'/measurements');
     return response.data;
 }
 
 async function getPatients(){
-    const response = await axios.get(url+'/patients');
+    const response = await axios.get('http://'+url+'/patients');
     return response.data;
 }
+
+
