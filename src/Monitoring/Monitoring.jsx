@@ -28,9 +28,6 @@ class Monitoring extends PureComponent {
 
     reloadPage = () => {
 
-        console.log('in reload page');
-        console.log(this.state.selectedPatientID);
-
         userService.getMeasurements(this.state.selectedPatientID)
             .then(data => {
                 console.log(data.measurements)
@@ -45,27 +42,19 @@ class Monitoring extends PureComponent {
                     patients: data.patients
                 })
             });
-
     };
 
     reloadMeasurements = (patientID) => {
 
-        this.setState({selectedPatientID: patientID}, function () {
-            console.log('and here?')
-            console.log(this.state.selectedPatientID);
-        });
+        this.setState({selectedPatientID: patientID});
         userService.getMeasurements(patientID)
             .then(data => {
                 console.log(data.measurements)
                 this.setState({
                     measurementsList: data.measurements
-                }, function() {
-                   console.log('check graph');
                 })
             });
-        console.log('after reload measurements');
-        console.log(this.state.selectedPatientID)
-    }
+    };
 
     measurementsSubscribe = () => {
         console.log('measurementSubscribe')
@@ -80,14 +69,11 @@ class Monitoring extends PureComponent {
                 eventSource: null,
                 modeButtonColor: '#401D5D',
             });
-
             console.log('close subscribe');
             return
         }
 
         console.log('open subscribe');
-        console.log('this.state.selectedPatientID')
-        console.log(this.state.selectedPatientID);
         let eventSourceInitDict = {headers: {'Authorization': localStorage.getItem('user')}};
         let eventSource = new EventSource('http://'+userService.url+'/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
 
@@ -101,13 +87,7 @@ class Monitoring extends PureComponent {
         }.bind(this), false);
 
         eventSource.addEventListener('MEASUREMENT', function(e) {
-            console.log('measurement');
-            console.log(e.data);
-            console.log('old state')
-            console.log(this.state.measurementsList)
             const list = this.state.measurementsList.concat(e.data);
-            console.log('list');
-            console.log(list);
             this.setState(() => {
                 return {
                     ping: new Date(e.data),
@@ -120,9 +100,7 @@ class Monitoring extends PureComponent {
         this.setState({
             eventSource: eventSource,
             modeButtonColor: 'red',});
-
     };
-
 
     render() {
 
@@ -173,9 +151,7 @@ class Monitoring extends PureComponent {
                             }>
                         {this.state.patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.firstname + ' ' + patient.lastname}</option>)}
                     </select>
-
                     <div>
-
                     </div>
                     <br/><br/>
                     {renderLineChart}
