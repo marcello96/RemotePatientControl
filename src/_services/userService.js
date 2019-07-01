@@ -54,7 +54,7 @@ function register(username, password, firstname, lastname) {
             if (!response.ok) {
                 return Promise.reject(response.statusText);
             }
-    });
+        });
 }
 
 
@@ -70,5 +70,3 @@ async function getPatients(){
     const response = await axios.get('http://'+url+'/patients');
     return response.data;
 }
-
-
