@@ -10,7 +10,7 @@ class Sidebar extends Component {
                 <SidebarHeader userData={this.props.userData} />
                 <ul className="list-unstyled components">
                     <MenuElement onClick={this.props.onClick} pageLink="/home" glyphName="home" elemText="Monitoring"/>
-                    <MenuElement onClick={this.props.onClick} pageLink="/home/notifications" glyphName="bell" elemText="Notifications"/>
+                    <MenuElement onClick={this.props.onClick} pageLink="/home/patients" glyphName="bell" elemText="Patients"/>
                     <MenuElement onClick={this.props.onClick} pageLink="/home/settings" glyphName="cog" elemText="Settings"/>
                 </ul>
             </nav>

@@ -15,7 +15,8 @@ class Register extends Component {
 
     this.state = {
       username: "",
-      email: "",
+      firstname: "",
+      lastname: "",
       password: "",
       passwordConfirmation: ""
     };
@@ -30,14 +31,15 @@ class Register extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
-    const { username, email, password } = this.state;
-    this.props.dispatch(userActions.register(username, email, password));
+    const { username, password, firstname, lastname } = this.state;
+    this.props.dispatch(userActions.register(username, password, firstname, lastname));
   };
 
   validateForm() {
     return this.state.username.length >= 4 &&
           this.state.username.length <= 16 &&
-          this.state.email.length > 0 &&
+          this.state.firstname.length > 0 &&
+          this.state.lastname.length > 0 &&
           this.state.password.length > 0 &&
           this.state.password === this.state.passwordConfirmation; 
   }
@@ -57,19 +59,27 @@ class Register extends Component {
             <ControlLabel>Username: </ControlLabel>
             <FormControl 
               autoFocus
-              placeholder="6 to 16 characters..."
+              placeholder="4 to 16 characters..."
               value={this.state.username}
               onChange={this.handleChange}
             />
           </FormGroup>
-          <FormGroup controlId="email" bsSize="large">
-            <ControlLabel>Email: </ControlLabel>
+          <FormGroup controlId="firstname" bsSize="large">
+            <ControlLabel>First name: </ControlLabel>
             <FormControl 
-              placeholder="Valid email address..."
-              type="email"
-              value={this.state.email}
+              placeholder="Enter first name..."
+              value={this.state.firstname}
               onChange={this.handleChange}
             />
+          </FormGroup>
+          <FormGroup controlId="lastname" bsSize="large">
+              <ControlLabel>Last name: </ControlLabel>
+              <FormControl
+                  placeholder="Enter last name..."
+                  type="email"
+                  value={this.state.lastname}
+                  onChange={this.handleChange}
+              />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
             <ControlLabel>Password: </ControlLabel>

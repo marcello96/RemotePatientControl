@@ -1,6 +1,6 @@
+
 import React, { Component } from 'react';
 import Login from '../login/Login';
-import Register from '../Register/Register';
 import Logout from '../login/Logout';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -16,7 +16,6 @@ class App extends Component {
                 <Route exact path="/start" component={WebsiteStart}/>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/logout" component={Logout} />
-                {/*<Route exact path="/register" component={Register} />*/}
                 <PrivateRouter path="/home" component={MainView} />
                 <Redirect from="/" to="/start" />
             </Switch>

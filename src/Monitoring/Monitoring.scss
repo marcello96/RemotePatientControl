@@ -4,10 +4,38 @@
 }
 
 #header{
-  color: white;
+  color: yellowgreen;
   font-size: 26px;
 }
 
 span.recharts-legend-item-text {
   color: white;
+}
+
+#SelectPatientLabel{
+  color: white;
+  font-size: 20px;
+}
+
+#PatientDropdown{
+  font-size: 20px;
+  background-color: #3d3b5e;
+  color: white;
+  margin-top: 10px;
+  border: solid 3px #3d3b5e;
+  height: 50px;
+  width: 200px;
+}
+
+
+#modeButton{
+  background-color: #401D5D;
+  font-size: 20px;
+  color: white;
+  height: 50px;
+  width: 120px;
+  border: solid 3px #401D5D;
+  border-radius: 5px;
+  float: right;
+  margin-right: 300px;
 }

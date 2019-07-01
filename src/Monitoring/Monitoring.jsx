@@ -1,71 +1,187 @@
 import React, { PureComponent } from 'react';
-//import { AppRegistry, Text, StyleSheet } from 'react-native';
 import './Monitoring.scss';
-//import { LineChart, Line } from 'recharts';
-//import { PureComponent } from 'react';
+import "react-awesome-button/dist/styles.css"
+import {userService} from "../_services/userService";
+import EventSource from 'eventsource'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
 
-const data = [
-    {name: '1.00', heartRate: 3490, pv: 4300, amt: 2100,},
-    {name: '2.00', heartRate: 3490, pv: 4300, amt: 2450,},
-    {name: '3.00', heartRate: 3490, pv: 4300, amt: 2320,},
-    {name: '4.00', heartRate: 3490, pv: 4300, amt: 2200,},
-    {name: '5.00', heartRate: 3490, pv: 4300, amt: 2230,},
-    {name: '6.00', heartRate: 3490, pv: 4300, amt: 2300,},
-    {name: '7.00', heartRate: 3490, pv: 4300, amt: 2100,},
-    {name: '8.00', heartRate: 4000, pv: 2400, amt: 2200,},
-    {name: '9.00', heartRate: 3000, pv: 1398, amt: 2210,},
-    {name: '10.00', heartRate: 2000, pv: 9800, amt: 2290,},
-    {name: '11.00', heartRate: 2780, pv: 3908, amt: 2000,},
-    {name: '12.00', heartRate: 1890, pv: 4800, amt: 2181,},
-    {name: '13.00', heartRate: 2390, pv: 3800, amt: 2500,},
-    {name: '14.00', heartRate: 3490, pv: 4300, amt: 2100,},
-    {name: '15.00', heartRate: 3490, pv: 4300, amt: 2200,},
-    {name: '16.00', heartRate: 3490, pv: 4300, amt: 2300,},
-    {name: '17.00', heartRate: 3490, pv: 4300, amt: 2500,},
-    {name: '18.00', heartRate: 3490, pv: 4300, amt: 2200,},
-    {name: '19.00', heartRate: 3490, pv: 4200, amt: 2300,},
-    {name: '20.00', heartRate: 3490, pv: 4100, amt: 2100,},
-    {name: '21.00', heartRate: 3490, pv: 4200, amt: 2000,},
-    {name: '22.00', heartRate: 3490, pv: 4320, amt: 2200,},
-    {name: '23.00', heartRate: 3490, pv: 4350, amt: 2000,},
-    {name: '24.00', heartRate: 3490, pv: 4310, amt: 2150,},
-];
 
 class Monitoring extends PureComponent {
-    render() {
-        const patientID = 1
-
-        const renderLineChart = (
-            <LineChart
-                width={1200}
-                height={400}
-                data={data}
-                margin={{
-                    top: 5, right: 30, left: 20, bottom: 5,
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" stroke="white"/>
-                <YAxis stroke={"white"}/>
-                <Tooltip />
-                <Legend stroke={"white"}/>
-                <Line type="monotone" dataKey="pv" stroke="red" activeDot={{ r: 8 }} />
-                <Line type="monotone" dataKey="heartRate" stroke="#82ca9d" />
-            </LineChart>
-        );
-
-        return (
-
-            <div className="char">
-                <div id="header">Heart Rate Monitoring</div>
-                <br/><br/>
-            {renderLineChart}
-            </div>
-        );
+    constructor(props) {
+        super(props);
+        this.state = {
+            measurementsList: "",
+            patients: [],
+            selectedPatientID: 2,
+            ping: new Date(),
+            measurementSubscribe: false,
+            eventSource: null,
+            modeButtonColor: '#401D5D',
+        };
     }
+
+    componentWillMount(){
+        this.reloadPage();
+    }
+
+    reloadPage = () => {
+
+        console.log('in reload page');
+        console.log(this.state.selectedPatientID);
+
+        userService.getMeasurements(this.state.selectedPatientID)
+            .then(data => {
+                console.log(data.measurements)
+                this.setState({
+                    measurementsList: data.measurements
+                })
+            });
+
+        userService.getPatients()
+            .then(data => {
+                this.setState({
+                    patients: data.patients
+                })
+            });
+
+    };
+
+    reloadMeasurements = (patientID) => {
+
+        this.setState({selectedPatientID: patientID}, function () {
+            console.log('and here?')
+            console.log(this.state.selectedPatientID);
+        });
+        userService.getMeasurements(patientID)
+            .then(data => {
+                console.log(data.measurements)
+                this.setState({
+                    measurementsList: data.measurements
+                }, function() {
+                   console.log('check graph');
+                })
+            });
+        console.log('after reload measurements');
+        console.log(this.state.selectedPatientID)
+    }
+
+    measurementsSubscribe = () => {
+        console.log('measurementSubscribe')
+        this.setState(prevState => ({
+            measurementSubscribe: !prevState.measurementSubscribe
+        }));
+
+        // connect to the real time database stream
+        if(this.state.measurementSubscribe){
+            this.state.eventSource.close();
+            this.setState({
+                eventSource: null,
+                modeButtonColor: '#401D5D',
+            });
+
+            console.log('close subscribe');
+            return
+        }
+
+        console.log('open subscribe');
+        console.log('this.state.selectedPatientID')
+        console.log(this.state.selectedPatientID);
+        let eventSourceInitDict = {headers: {'Authorization': localStorage.getItem('user')}};
+        let eventSource = new EventSource('http://'+userService.url+'/patient/'+this.state.selectedPatientID+'/measurements/subscribe', eventSourceInitDict);
+
+        eventSource.addEventListener('INIT', function(e) {
+            console.log('init'+e);
+            this.setState(() => {
+                return {
+                    ping: new Date(e.data)
+                };
+            });
+        }.bind(this), false);
+
+        eventSource.addEventListener('MEASUREMENT', function(e) {
+            console.log('measurement');
+            console.log(e.data);
+            console.log('old state')
+            console.log(this.state.measurementsList)
+            const list = this.state.measurementsList.concat(e.data);
+            console.log('list');
+            console.log(list);
+            this.setState(() => {
+                return {
+                    ping: new Date(e.data),
+                    measurementsList: list,
+                };
+            });
+
+        }.bind(this), false);
+
+        this.setState({
+            eventSource: eventSource,
+            modeButtonColor: 'red',});
+
+    };
+
+
+    render() {
+
+            const renderLineChart = (
+                <LineChart
+                    width={1200}
+                    height={400}
+                    data={this.state.measurementsList}
+                    margin={{
+                        top: 5, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="timestamp" stroke="white"/>
+                    <YAxis stroke={"white"}/>
+                    <Tooltip/>
+                    <Legend stroke={"white"}/>
+                    <Line type="monotone" dataKey="heartRate" stroke="#82ca9d"/>
+                </LineChart>
+            );
+
+
+            return (
+
+                <div className="char">
+                    <div id="header">Heart Rate Monitoring</div>
+                    <br/><br/>
+                    <button id="modeButton" onClick={this.measurementsSubscribe} style={{backgroundColor:this.state.modeButtonColor}}>{this.state.eventSource == null? 'LIVE OFF' : 'LIVE ON'}</button>
+                    <br/><br/>
+                    <span id={"SelectPatientLabel"}>Select Patient</span>
+                    <br/>
+                    <select id="PatientDropdown" value={this.state.selectedPatientID}
+                            defaultValue={{ label: "Ricky Balboa" , value: 1, key: 1}}
+                            onChange={(e) => {
+                                console.log('e');
+                                console.log(e.target.value);
+                                this.setState({
+                                        selectedPatientID: e.target.value
+                                    }
+                                );
+                                if(this.state.measurementsSubscribe){
+                                    console.log('was measurementSubscribe');
+                                   this.measurementsSubscribe();
+                                }
+
+                                this.reloadMeasurements(e.target.value);
+                                }
+                            }>
+                        {this.state.patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.firstname + ' ' + patient.lastname}</option>)}
+                    </select>
+
+                    <div>
+
+                    </div>
+                    <br/><br/>
+                    {renderLineChart}
+                </div>
+            )
+        }
 }
 
 export default Monitoring;
